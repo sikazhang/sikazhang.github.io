@@ -2,6 +2,7 @@ http://myhexo.whuzxq.com/2019/05/05/yuque/无标dfsfd题/
 http://myhexo.whuzxq.com/2018/06/15/webpack/
 http://myhexo.whuzxq.com/2018/05/23/es6/
 http://myhexo.whuzxq.com/2018/05/16/REACT-BIND/
+http://myhexo.whuzxq.com/2018/05/10/promise copy/
 http://myhexo.whuzxq.com/2018/05/10/promise/
 http://myhexo.whuzxq.com/2018/05/06/async/
 http://myhexo.whuzxq.com/2018/03/21/zhihu/

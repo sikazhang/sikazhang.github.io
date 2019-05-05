@@ -1,0 +1,849 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="live," />
+
+
+
+
+
+  <link rel="alternate" href="/rss2.xml" title="WHUZXQ'S BLOG" type="application/atom+xml" />
+
+
+
+
+
+
+<meta name="description" content="1.如何学习vue源码：http://hcysun.me/2017/03/03/Vue源码学习/ 2.组件：主流框架以组件做为最基本的单元。前端思维：页面-&amp;gt;应用-&amp;gt;组件react贡献：组件可以是一个函数，有一些props进来，可以返回一个抽象的数据结构，用class包装。突破组件是静态页面的思维方式。">
+<meta name="keywords" content="live">
+<meta property="og:type" content="article">
+<meta property="og:title" content="【知乎】尤雨溪知乎live感悟与总结">
+<meta property="og:url" content="http://myhexo.whuzxq.com/2018/03/21/zhihu/index.html">
+<meta property="og:site_name" content="WHUZXQ&#39;S BLOG">
+<meta property="og:description" content="1.如何学习vue源码：http://hcysun.me/2017/03/03/Vue源码学习/ 2.组件：主流框架以组件做为最基本的单元。前端思维：页面-&amp;gt;应用-&amp;gt;组件react贡献：组件可以是一个函数，有一些props进来，可以返回一个抽象的数据结构，用class包装。突破组件是静态页面的思维方式。">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:updated_time" content="2018-07-31T16:42:00.446Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="【知乎】尤雨溪知乎live感悟与总结">
+<meta name="twitter:description" content="1.如何学习vue源码：http://hcysun.me/2017/03/03/Vue源码学习/ 2.组件：主流框架以组件做为最基本的单元。前端思维：页面-&amp;gt;应用-&amp;gt;组件react贡献：组件可以是一个函数，有一些props进来，可以返回一个抽象的数据结构，用class包装。突破组件是静态页面的思维方式。">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":null,"post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://myhexo.whuzxq.com/2018/03/21/zhihu/"/>
+
+
+
+
+
+  <title>【知乎】尤雨溪知乎live感悟与总结 | WHUZXQ'S BLOG</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">WHUZXQ'S BLOG</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">天道酬勤</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-生活">
+          <a href="/favorite/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-question-circle"></i> <br />
+            
+            生活
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-绘画">
+          <a href="/photos/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-question-circle"></i> <br />
+            
+            绘画
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://myhexo.whuzxq.com/2018/03/21/zhihu/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="zxq">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/uploads/avatar.png">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="WHUZXQ'S BLOG">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">【知乎】尤雨溪知乎live感悟与总结</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-03-21T10:26:11+08:00">
+                2018-03-21
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/live/" itemprop="url" rel="index">
+                    <span itemprop="name">live</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+            <span class="post-meta-divider">|</span>
+            <span class="page-pv"><i class="fa fa-file-o"></i> 浏览量
+            <span class="busuanzi-value" id="busuanzi_value_page_pv" ></span>次
+            </span>
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>1.如何学习vue源码：<br><a href="http://hcysun.me/2017/03/03/Vue源码学习/" target="_blank" rel="noopener">http://hcysun.me/2017/03/03/Vue源码学习/</a></p>
+<p>2.组件：<br>主流框架以组件做为最基本的单元。<br>前端思维：页面-&gt;应用-&gt;组件<br>react贡献：组件可以是一个函数，有一些props进来，可以返回一个抽象的数据结构，用class包装。突破组件是静态页面的思维方式。</p>
+<a id="more"></a>
+<p>3.组件分类：</p>
+<ul>
+<li>纯展示型组件：数据进，dom出</li>
+<li>揭露型组件（container）:和数据层打交道。将数据传给展示型的组件。</li>
+<li>交互性组件：对于表单组件的封装和加强。强调复用。<br>功能型 比如 <code>&lt;router-view&gt;</code>，<code>&lt;transition&gt;</code>，作为一种扩展、抽象机制存在。</li>
+</ul>
+<p>4 模版和jsx的对比：<br>jsx:本质上js。最大的优点：灵活性。最大的价值是书写功能型组件远超模版。<br>模版会将最少的逻辑放在模版文件里。</p>
+<p>5 colocation：<br>模版，样式和js逻辑</p>
+<p>6 变化侦测：<br>vue数据是响应式的，把数据交给vue后，mutate属性值时，vue会做出响应的更新。详情见：<br><a href="https://docs.google.com/presentation/d/1_BlJxudppfKmAtfbNIcqNwzrC5vLrR_h1e09apcpdNY/edit?usp=sharing" target="_blank" rel="noopener">https://docs.google.com/presentation/d/1_BlJxudppfKmAtfbNIcqNwzrC5vLrR_h1e09apcpdNY/edit?usp=sharing</a><br>pull：系统进行暴力比对，查出哪些变了。(react)<br>通过一些方式减少系统无用功<br>push:细粒度的更新，但是每一个绑定都会有开销。（vue）</p>
+<p>7 状态管理（flux）<br>本质：从源事件映射到状态的改变，再映射到ui的变化。<br>声明式渲染：已经做到了状态的改变映射到ui的变化。<br>状态管理做的事情是：如何管理将事件元映射到状态变化。</p>
+<p>把vue当redux用：<a href="https://jsfiddle.net/yyx990803/0a22ojps/" target="_blank" rel="noopener">https://jsfiddle.net/yyx990803/0a22ojps/</a><br>把vue当mobx用：<a href="https://jsfiddle.net/yyx990803/f5a24dk3/" target="_blank" rel="noopener">https://jsfiddle.net/yyx990803/f5a24dk3/</a></p>
+<p>8 路由：<br>组件和路由解耦，变成了把一个URL映射到组件树的过程。<br>路由之间的跳转，要提供钩子，或者可能进行异步操作。</p>
+<p>web路由和app路由的区别：<br>web：上一个状态被丢弃<br>app：新的界面盖在现有的界面上。</p>
+<ol start="9">
+<li>css<br>主流的 CSS 方案</li>
+</ol>
+<ul>
+<li>跟 JS 完全解耦，靠预处理器和比如 BEM 这样的规范来保持可维护性，偏传统</li>
+<li>CSS Modules，依然是 CSS，但是通过编译来避免 CSS 类名的全局冲突</li>
+<li>各类 CSS-in-JS 方案，React 社区为代表，比较激进</li>
+<li>Vue 的单文件组件 CSS，或是 Angular 的组件 CSS（写在装饰器里面），一种比较折中的方案<br>css-in-js:<br><a href="https://speakerdeck.com/vjeux/react-css-in-js" target="_blank" rel="noopener">https://speakerdeck.com/vjeux/react-css-in-js</a><br>反对css-in-js:<br><a href="https://medium.com/seek-blog/a-unified-styling-language-d0c208de2660" target="_blank" rel="noopener">https://medium.com/seek-blog/a-unified-styling-language-d0c208de2660</a><br>有价值的点：<br><a href="https://medium.com/seek-blog/a-unified-styling-language-d0c208de2660" target="_blank" rel="noopener">https://medium.com/seek-blog/a-unified-styling-language-d0c208de2660</a><br>内容梗概：<br>传统css缺点：<br>传统 css 的一些问题：</li>
+</ul>
+<ol>
+<li>作用域</li>
+<li>Critical CSS</li>
+<li>Atomic CSS</li>
+<li>分发复用</li>
+<li>跨平台复用</li>
+</ol>
+<p>10构建工具<br>构建工具解决的其实是几方面的问题：</p>
+<ul>
+<li>任务的自动化</li>
+<li>开发体验和效率（新的语言功能，语法糖，hot reload 等等）</li>
+<li>部署相关的需求</li>
+<li>编译时优化</li>
+</ul>
+<p>关于部署<br><a href="https://www.zhihu.com/question/20790576" target="_blank" rel="noopener">https://www.zhihu.com/question/20790576</a></p>
+<p>关于服务端渲染：<br>ssr.vuejs.org</p>
+<p>新规范：<br>ssr.vuejs.org</p>
+<p><a href="https://www.zhihu.com/question/58731753" target="_blank" rel="noopener">https://www.zhihu.com/question/58731753</a></p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/live/" rel="tag"># live</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2018/03/11/ubuntu/" rel="next" title="ubuntu16.04线上服务器部署node项目">
+                <i class="fa fa-chevron-left"></i> ubuntu16.04线上服务器部署node项目
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2018/05/06/async/" rel="prev" title="JS异步编程——深入理解async/await">
+                JS异步编程——深入理解async/await <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+
+      <section class="site-overview-wrap sidebar-panel sidebar-panel-active">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image"
+                src="/uploads/avatar.png"
+                alt="zxq" />
+            
+              <p class="site-author-name" itemprop="name">zxq</p>
+              <p class="site-description motion-element" itemprop="description">前端伊甸园</p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">8</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">6</span>
+                  <span class="site-state-item-name">分类</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">6</span>
+                  <span class="site-state-item-name">标签</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+            <div class="feed-link motion-element">
+              <a href="/rss2.xml" rel="alternate">
+                <i class="fa fa-rss"></i>
+                RSS
+              </a>
+            </div>
+          
+
+          
+            <div class="links-of-author motion-element">
+                
+                  <span class="links-of-author-item">
+                    <a href="https://github.com/whuzxq" target="_blank" title="GitHub">
+                      
+                        <i class="fa fa-fw fa-github"></i>GitHub</a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="mailto:1092621818@qq.com" target="_blank" title="E-Mail">
+                      
+                        <i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="https://blog.csdn.net/whuzxq" target="_blank" title="CSDN">
+                      
+                        <i class="fa fa-fw fa-globe"></i>CSDN</a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="http://whuzxq.com" target="_blank" title="个人主页">
+                      
+                        <i class="fa fa-fw fa-globe"></i>个人主页</a>
+                  </span>
+                
+            </div>
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2019</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">zxq</span>
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Pisces</a> v5.1.4</div>
+
+
+
+
+        
+<div class="busuanzi-count">
+  <script async src="https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+  
+
+  
+</div>
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.4"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+<script>
+(function(){
+    var bp = document.createElement('script');
+    var curProtocol = window.location.protocol.split(':')[0];
+    if (curProtocol === 'https') {
+        bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';        
+    }
+    else {
+        bp.src = 'http://push.zhanzhang.baidu.com/push.js';
+    }
+    var s = document.getElementsByTagName("script")[0];
+    s.parentNode.insertBefore(bp, s);
+})();
+</script>
+
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

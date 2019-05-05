@@ -1,0 +1,864 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="javascript," />
+
+
+
+
+
+  <link rel="alternate" href="/rss2.xml" title="WHUZXQ'S BLOG" type="application/atom+xml" />
+
+
+
+
+
+
+<meta name="description" content="最近在前端论坛闲逛，看到了一些讲parcel、webpack的文章，就突然很好奇，每天都在用的打包工具，他们打包的原理究竟是什么。只有知道了这一点，才可以在众多的打包工具里，找到最适合的那个它。在了解打包原理之前，先花一些篇章说明了一下为什么要使用打包工具。">
+<meta name="keywords" content="javascript">
+<meta property="og:type" content="article">
+<meta property="og:title" content="不聊webpack配置，来说说它的原理">
+<meta property="og:url" content="http://myhexo.whuzxq.com/2018/06/15/webpack/index.html">
+<meta property="og:site_name" content="WHUZXQ&#39;S BLOG">
+<meta property="og:description" content="最近在前端论坛闲逛，看到了一些讲parcel、webpack的文章，就突然很好奇，每天都在用的打包工具，他们打包的原理究竟是什么。只有知道了这一点，才可以在众多的打包工具里，找到最适合的那个它。在了解打包原理之前，先花一些篇章说明了一下为什么要使用打包工具。">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:updated_time" content="2018-07-31T17:02:48.258Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="不聊webpack配置，来说说它的原理">
+<meta name="twitter:description" content="最近在前端论坛闲逛，看到了一些讲parcel、webpack的文章，就突然很好奇，每天都在用的打包工具，他们打包的原理究竟是什么。只有知道了这一点，才可以在众多的打包工具里，找到最适合的那个它。在了解打包原理之前，先花一些篇章说明了一下为什么要使用打包工具。">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":null,"post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://myhexo.whuzxq.com/2018/06/15/webpack/"/>
+
+
+
+
+
+  <title>不聊webpack配置，来说说它的原理 | WHUZXQ'S BLOG</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">WHUZXQ'S BLOG</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">天道酬勤</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-生活">
+          <a href="/favorite/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-question-circle"></i> <br />
+            
+            生活
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-绘画">
+          <a href="/photos/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-question-circle"></i> <br />
+            
+            绘画
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://myhexo.whuzxq.com/2018/06/15/webpack/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="zxq">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/uploads/avatar.png">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="WHUZXQ'S BLOG">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">不聊webpack配置，来说说它的原理</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-06-15T14:34:11+08:00">
+                2018-06-15
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/webpack/" itemprop="url" rel="index">
+                    <span itemprop="name">webpack</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+            <span class="post-meta-divider">|</span>
+            <span class="page-pv"><i class="fa fa-file-o"></i> 浏览量
+            <span class="busuanzi-value" id="busuanzi_value_page_pv" ></span>次
+            </span>
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>最近在前端论坛闲逛，看到了一些讲parcel、webpack的文章，就突然很好奇，每天都在用的打包工具，他们打包的原理究竟是什么。只有知道了这一点，才可以在众多的打包工具里，找到最适合的那个它。在了解打包原理之前，先花一些篇章说明了一下为什么要使用打包工具。<br><a id="more"></a></p>
+<h2 id="0-模块系统"><a href="#0-模块系统" class="headerlink" title="0.模块系统"></a>0.模块系统</h2><p>  前端产品的交付是基于浏览器，这些资源是通过增量加载的方式运行到浏览器端，如何在开发环境组织好这些碎片化的代码和资源，并且保证他们在浏览器端快速、优雅的加载和更新，就需要一个模块化系统。这个理想中的模块化系统是前端工程师多年来一直探索的难题。</p>
+<p>  <strong>模块系统主要解决模块的定义、依赖和导出。</strong> 原始的<code>&lt;script&gt;</code>标签加载方式有一些常见的弊端：例如全局作用域下容易造成变量冲突；文件只能按照<code>&lt;script&gt;</code>的书写顺序进行加载；开发人员必须主观解决模块和代码库的依赖关系等。</p>
+<p><strong>因此衍生出很多模块化方案：</strong></p>
+<p><strong>1.CommonJs</strong>：优点：服务器端模块便于重用。缺点：同步的模块加载方式不适合在浏览器环境中，同步意味着阻塞加载，浏览器资源是异步加载的。</p>
+<p><strong>2.AMD</strong>：依赖前置。优点：适合在浏览器环境异步加载；缺点：阅读和书写比较困难。</p>
+<p><strong>3.CMD</strong>：依赖就近，延迟执行。优点：很容易在node中运行；缺点：依赖spm打包，模块的加载逻辑偏重。</p>
+<p><strong>4.ES6模块：</strong>:尽量的静态化，使得编译时就能确定模块的依赖关系，以及输入输出的变量。CommonJS 和 AMD 模块，都只能在运行时确定这些东西。优点：容易进行静态分析；缺点：原生浏览器未实现该标准。</p>
+<p>说到模块的加载和传输，若是每个文件都单独请求，会导致请求次数过多，导致启动速度过慢。若是全部打包在一块只请求一次，会导致流量浪费，初始化过程慢。<strong>因此最佳方案是分块传输，按需进行懒加载，在实际用到某些模块的时候再增量更新</strong>。要实现模块的按需加载，就需要一个对整个代码库中的模块进行<strong>静态分析、编译打包</strong>的过程。Webpack 就是在这样的需求中应运而生。</p>
+<p>注：要注意一个概念，一切皆模块。样式、图片、字体、HTML 模板等等众多的资源，都可以视作模块。</p>
+<h2 id="1-模块打包器：webpack"><a href="#1-模块打包器：webpack" class="headerlink" title="1.模块打包器：webpack"></a>1.模块打包器：webpack</h2><p>Webpack 是一个模块打包器。它将根据模块的依赖关系进行静态分析，然后将这些模块按照指定的规则生成对应的静态资源。<br>那么问题来了，webpack真的能做到上述提到的静态分析、编译打包么？我们首先来看一下webpack能做什么：</p>
+<p> <strong>1.代码拆分</strong><br> Webpack 有两种组织模块依赖的方式，同步和异步。异步依赖作为分割点，形成一个新的块。在优化了依赖树后，每一个异步区块都作为一个文件被打包。</p>
+<p> <strong>2.Loader</strong><br> Webpack 本身只能处理原生的 JavaScript 模块，但是 loader 转换器可以将各种类型的资源转换成 JavaScript 模块。这样，任何资源都可以成为 Webpack 可以处理的模块。</p>
+<p> <strong>3.智能解析</strong><br>Webpack 有一个智能解析器，几乎可以处理任何第三方库，无论它们的模块形式是 CommonJS、 AMD 还是普通的 JS 文件。</p>
+<p><strong>4.插件系统</strong><br>Webpack 还有一个功能丰富的插件系统。大多数内容功能都是基于这个插件系统运行的，还可以开发和使用开源的 Webpack 插件，来满足各式各样的需求。</p>
+<p><strong>5.快速运行</strong><br>Webpack 使用异步 I/O 和多级缓存提高运行效率，这使得 Webpack 能够以令人难以置信的速度快速增量编译。</p>
+<p>以上是webpack五个主要特点，但是看完还是觉得有些雾里看山，webpack到底是如何把一些分散的小模块，整合成大模块？又是如何处理好各模块的依赖关系？下面就以parcel核心开发者@ronami的开源项目minipack为例，说明以上问题。</p>
+<h2 id="2-打包工具核心原理——以minipack为例"><a href="#2-打包工具核心原理——以minipack为例" class="headerlink" title="2.打包工具核心原理——以minipack为例"></a>2.打包工具核心原理——以minipack为例</h2><p>打包工具就是负责把一些分散的小模块，按照一定的规则整合成一个大模块的工具。与此同时，打包工具也会处理好模块之间的依赖关系，将项目运行在平台上。minipack项目最想说明的问题，也是打包工具最核心的部分，就是如何处理好<strong>模块间的依赖关系</strong>。</p>
+<p>首先，打包工具会从一个入口文件开始，分析里面的依赖，并进一步地分析依赖中的依赖。<br>我们新建三个文件，并建立依赖：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">/* name.js */</span><br><span class="line">export const name = &apos;World&apos;</span><br><span class="line"></span><br><span class="line">/* message.js */</span><br><span class="line">import &#123; name &#125; from &apos;./name.js&apos;</span><br><span class="line">export default `Hello $&#123;name&#125;!`</span><br><span class="line"></span><br><span class="line">/* entry.js */</span><br><span class="line">import message from &apos;./message.js&apos;</span><br><span class="line">console.log(message)</span><br></pre></td></tr></table></figure>
+<p>首先引入必要的工具</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">/* minipack.js */</span><br><span class="line">const fs = require(&apos;fs&apos;)</span><br><span class="line">const path = require(&apos;path&apos;)</span><br><span class="line">const babylon = require(&apos;babylon&apos;)</span><br><span class="line">const traverse = require(&apos;babel-traverse&apos;).default</span><br><span class="line">const &#123; transformFromAst &#125; = require(&apos;babel-core&apos;)</span><br></pre></td></tr></table></figure>
+<p>接着我们将创建一个函数，参数是文件的路径，作用是读取文件内容并提取它的依赖关系。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br></pre></td><td class="code"><pre><span class="line">function createAsset(filename) &#123;</span><br><span class="line">  // 以字符串形式读取文件的内容. </span><br><span class="line">  const content = fs.readFileSync(filename, &apos;utf-8&apos;);</span><br><span class="line">// 现在我们试图找出这个文件依赖于哪个文件。虽然我们可以通过查看其内容来获取import字符串. 然而,这是一个非常笨重的方法，我们将使用JavaScript解析器来代替。</span><br><span class="line">  </span><br><span class="line">// JavaScript解析器是可以读取和理解JavaScript代码的工具，它们生成一个更抽象的模型,称为`ast (抽象语法树)(https://astexplorer.net)`。</span><br><span class="line">  const ast = babylon.parse(content, &#123;</span><br><span class="line">    sourceType: &apos;module&apos;,</span><br><span class="line">  &#125;);</span><br><span class="line"></span><br><span class="line">// 定义数组，这个数组将保存这个模块依赖的模块的相对路径.</span><br><span class="line">  const dependencies = [];</span><br><span class="line"></span><br><span class="line">//  我们遍历`ast`来试着理解这个模块依赖哪些模块，要做到这一点,我们需要检查`ast`中的每个 `import` 声明。</span><br><span class="line">// `Ecmascript`模块相当简单,因为它们是静态的. 这意味着你不能`import`一个变量,或者有条件地`import`另一个模块。每次我们看到`import`声明时,我们都可以将其数值视为`依赖性`。</span><br><span class="line">  traverse(ast, &#123;</span><br><span class="line">    ImportDeclaration: (&#123;node&#125;) =&gt; </span><br><span class="line">        // 我们将依赖关系存入数组</span><br><span class="line">        dependencies.push(node.source.value);</span><br><span class="line">    &#125;,</span><br><span class="line">  &#125;);</span><br><span class="line">  </span><br><span class="line"></span><br><span class="line">//   我们还通过递增简单计数器为此模块分配唯一标识符. </span><br><span class="line">  const id = ID++;</span><br><span class="line"></span><br><span class="line">//  我们使用`Ecmascript`模块和其他JavaScript,可能不支持所有浏览器。</span><br><span class="line">//  为了确保我们的程序在所有浏览器中运行,</span><br><span class="line">//  我们将使用[babel](https://babeljs.io)来进行转换。</span><br><span class="line">//  我们可以用`babel-preset-env``将我们的代码转换为浏览器可以运行的东西. </span><br><span class="line">  const &#123;code&#125; = transformFromAst(ast, null, &#123;</span><br><span class="line">    presets: [&apos;env&apos;],</span><br><span class="line">  &#125;);</span><br><span class="line"></span><br><span class="line">  // 返回有关此模块的所有信息.</span><br><span class="line">  return &#123;</span><br><span class="line">    id,</span><br><span class="line">    filename,</span><br><span class="line">    dependencies,</span><br><span class="line">    code,</span><br><span class="line">  &#125;;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>现在我们可以提取单个模块的依赖关系，那么，我们将提取它的每一个依赖关系的依赖关系，并循环下去，直到我们了解应用程序中的每个模块以及他们是如何相互依赖的。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br></pre></td><td class="code"><pre><span class="line">function createGraph(entry) &#123;</span><br><span class="line">  // 首先解析整个文件.</span><br><span class="line">  const mainAsset = createAsset(entry);</span><br><span class="line"></span><br><span class="line">//   我们将使用queue来解析每个asset的依赖关系. </span><br><span class="line">//   我们正在定义一个只有entry asset的数组.</span><br><span class="line">  const queue = [mainAsset];</span><br><span class="line"></span><br><span class="line">// 我们使用一个`for ... of`循环遍历 队列. </span><br><span class="line">// 最初 这个队列 只有一个asset,但是当我们迭代它时,我们会将额外的assert推入到queue中. </span><br><span class="line">// 这个循环将在queue为空时终止. </span><br><span class="line">  for (const asset of queue) &#123;</span><br><span class="line">    // 我们的每一个asset都有它所依赖模块的相对路径列表. </span><br><span class="line">    // 我们将重复它们,用我们的`createAsset() `函数解析它们,并跟踪此模块在此对象中的依赖关系.</span><br><span class="line">    asset.mapping = &#123;&#125;;</span><br><span class="line"></span><br><span class="line">    // 这是这个模块所在的目录. </span><br><span class="line">    const dirname = path.dirname(asset.filename);</span><br><span class="line"></span><br><span class="line">    // 我们遍历其相关路径的列表</span><br><span class="line">    asset.dependencies.forEach(relativePath =&gt; &#123;</span><br><span class="line">    // 我们可以通过将相对路径与父资源目录的路径连接,将相对路径转变为绝对路径.</span><br><span class="line">      const absolutePath = path.join(dirname, relativePath);</span><br><span class="line"></span><br><span class="line">    // 解析asset,读取其内容并提取其依赖关系.</span><br><span class="line">      const child = createAsset(absolutePath);</span><br><span class="line"></span><br><span class="line">    //   了解`asset`依赖取决于`child`这一点对我们来说很重要. </span><br><span class="line">    //   通过给`asset.mapping`对象增加一个新的属性(值为child.id)来表达这种一一对应的关系.</span><br><span class="line">      asset.mapping[relativePath] = child.id;</span><br><span class="line"></span><br><span class="line">      // 最后,我们将`child`这个资产推入队列,这样它的依赖关系也将被迭代和解析.</span><br><span class="line">      queue.push(child);</span><br><span class="line">    &#125;);</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  return queue;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>接下来我们定义一个函数，传入上一步的graph，返回一个可以在浏览器上运行的包。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br></pre></td><td class="code"><pre><span class="line">function bundle(graph) &#123;</span><br><span class="line">  let modules = &apos;&apos;;</span><br><span class="line"></span><br><span class="line">// 在我们到达该函数的主体之前,我们将构建一个作为该函数的参数的对象. </span><br><span class="line">// 请注意,我们构建的这个字符串被两个花括号 (&#123;&#125;) 包裹,因此对于每个模块,</span><br><span class="line">// 我们添加一个这种格式的字符串: `key: value,`.</span><br><span class="line">  graph.forEach(mod =&gt; &#123;</span><br><span class="line">     //  图表中的每个模块在这个对象中都有一个entry. 我们用模块的id`作为`key`，用数组作为`value`</span><br><span class="line">    // 第一个参数是用函数包装的每个模块的代码. 这是因为模块应该被限定范围: 在一个模块中定义变量不会影响其他模块或全局范围. </span><br><span class="line">    </span><br><span class="line">    // 对于第二个参数,我们用`stringify`解析模块及其依赖之间的关系(也就是上文的asset.mapping). 解析后的对象看起来像这样: `&#123;&apos;./relative/path&apos;: 1&#125;`. </span><br><span class="line">    </span><br><span class="line">    // 这是因为我们模块的被转换后会通过相对路径来调用`require()`. 当调用这个函数时,我们应该能够知道依赖图中的哪个模块对应于该模块的相对路径. </span><br><span class="line">    modules += `$&#123;mod.id&#125;: [</span><br><span class="line">      function (require, module, exports) &#123; $&#123;mod.code&#125; &#125;,</span><br><span class="line">      $&#123;JSON.stringify(mod.mapping)&#125;,</span><br><span class="line">    ],`;</span><br><span class="line">    / 最后,使用`commonjs`,当模块需要被导出时,它可以通过改变exports对象来暴露模块的值. </span><br><span class="line">   // require函数最后会返回exports对象.</span><br><span class="line">    const result = `</span><br><span class="line">    (function(modules) &#123;</span><br><span class="line">      function require(id) &#123; </span><br><span class="line">        const [fn, mapping] = modules[id];</span><br><span class="line">        function localRequire(name) &#123; </span><br><span class="line">          return require(mapping[name]); </span><br><span class="line">        &#125;</span><br><span class="line">        const module = &#123; exports : &#123;&#125; &#125;;</span><br><span class="line">        fn(localRequire, module, module.exports); </span><br><span class="line">        return module.exports;</span><br><span class="line">      &#125;</span><br><span class="line">      require(0);</span><br><span class="line">    &#125;)(&#123;$&#123;modules&#125;&#125;)</span><br><span class="line">    `;</span><br><span class="line">  return result;</span><br><span class="line">  &#125;);</span><br></pre></td></tr></table></figure>
+<p>运行！</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">const graph = createGraph(&apos;./example/entry.js&apos;);</span><br><span class="line">const result = bundle(graph);</span><br><span class="line">//得到结果，开心！</span><br><span class="line">console.log(result);</span><br></pre></td></tr></table></figure>
+<p>更多信息可访问项目<a href="https://github.com/chinanf-boy/minipack-explain/blob/master/src/minipack.js" target="_blank" rel="noopener">github地址</a></p>
+<h2 id="3-总结"><a href="#3-总结" class="headerlink" title="3.总结"></a>3.总结</h2><p>webpack解决了包与包之间潜在的循环依赖难题，同时，按需合并静态文件，以避免浏览器在网络取数阶段的并发瓶颈。除了打包，还可以进一步实现压缩（减少网络传输）和编译（ES6、JSX等语法向下兼容）的功能。</p>
+<p>基于对webpack.config.js文件的配置，执行打包时的工作原理，可总结为：把页面逻辑当作一个整体，通过一个给定的入口文件，webpack从这个文件开始，找到所有的依赖文件，进行打包、编译、压缩，最后输出一个浏览器可识别的JS文件。</p>
+<p>一个模块打包工具，第一步会从入口文件开始，对其进行依赖分析，第二步对其所有依赖再次递归进行依赖分析，第三步构建出模块的依赖图集，最后一步根据依赖图集使用CommonJS规范构建出最终的代码。</p>
+<h2 id="4-参考网址"><a href="#4-参考网址" class="headerlink" title="4.参考网址"></a>4.参考网址</h2><p><a href="https://mp.weixin.qq.com/s/w-oXmHNSyu0Y_IlfmDwJKQ" target="_blank" rel="noopener">https://mp.weixin.qq.com/s/w-oXmHNSyu0Y_IlfmDwJKQ</a></p>
+<p><a href="https://github.com/chinanf-boy/minipack-explain/blob/master/src/minipack.js" target="_blank" rel="noopener">https://github.com/chinanf-boy/minipack-explain/blob/master/src/minipack.js</a></p>
+<p><a href="https://zhaoda.net/webpack-handbook/configuration.html" target="_blank" rel="noopener">https://zhaoda.net/webpack-handbook/configuration.html</a></p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/javascript/" rel="tag"># javascript</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2018/05/23/es6/" rel="next" title="【译】想写出优雅的代码？试试这些ES6小tips">
+                <i class="fa fa-chevron-left"></i> 【译】想写出优雅的代码？试试这些ES6小tips
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image"
+                src="/uploads/avatar.png"
+                alt="zxq" />
+            
+              <p class="site-author-name" itemprop="name">zxq</p>
+              <p class="site-description motion-element" itemprop="description">前端伊甸园</p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">8</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">6</span>
+                  <span class="site-state-item-name">分类</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">6</span>
+                  <span class="site-state-item-name">标签</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+            <div class="feed-link motion-element">
+              <a href="/rss2.xml" rel="alternate">
+                <i class="fa fa-rss"></i>
+                RSS
+              </a>
+            </div>
+          
+
+          
+            <div class="links-of-author motion-element">
+                
+                  <span class="links-of-author-item">
+                    <a href="https://github.com/whuzxq" target="_blank" title="GitHub">
+                      
+                        <i class="fa fa-fw fa-github"></i>GitHub</a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="mailto:1092621818@qq.com" target="_blank" title="E-Mail">
+                      
+                        <i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="https://blog.csdn.net/whuzxq" target="_blank" title="CSDN">
+                      
+                        <i class="fa fa-fw fa-globe"></i>CSDN</a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="http://whuzxq.com" target="_blank" title="个人主页">
+                      
+                        <i class="fa fa-fw fa-globe"></i>个人主页</a>
+                  </span>
+                
+            </div>
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#0-模块系统"><span class="nav-number">1.</span> <span class="nav-text">0.模块系统</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#1-模块打包器：webpack"><span class="nav-number">2.</span> <span class="nav-text">1.模块打包器：webpack</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-打包工具核心原理——以minipack为例"><span class="nav-number">3.</span> <span class="nav-text">2.打包工具核心原理——以minipack为例</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#3-总结"><span class="nav-number">4.</span> <span class="nav-text">3.总结</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#4-参考网址"><span class="nav-number">5.</span> <span class="nav-text">4.参考网址</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2019</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">zxq</span>
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Pisces</a> v5.1.4</div>
+
+
+
+
+        
+<div class="busuanzi-count">
+  <script async src="https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+  
+
+  
+</div>
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.4"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+<script>
+(function(){
+    var bp = document.createElement('script');
+    var curProtocol = window.location.protocol.split(':')[0];
+    if (curProtocol === 'https') {
+        bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';        
+    }
+    else {
+        bp.src = 'http://push.zhanzhang.baidu.com/push.js';
+    }
+    var s = document.getElementsByTagName("script")[0];
+    s.parentNode.insertBefore(bp, s);
+})();
+</script>
+
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

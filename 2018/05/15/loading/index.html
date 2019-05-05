@@ -1,0 +1,918 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="javascript," />
+
+
+
+
+
+  <link rel="alternate" href="/rss2.xml" title="WHUZXQ'S BLOG" type="application/atom+xml" />
+
+
+
+
+
+
+<meta name="description" content="首先，让我们先看一下效果图。  这就是我们将要实现的 DEMO。">
+<meta name="keywords" content="javascript">
+<meta property="og:type" content="article">
+<meta property="og:title" content="【译】如何在 5 分钟之内写出一个不错的 loading 界面">
+<meta property="og:url" content="http://myhexo.whuzxq.com/2018/05/15/loading/index.html">
+<meta property="og:site_name" content="WHUZXQ&#39;S BLOG">
+<meta property="og:description" content="首先，让我们先看一下效果图。  这就是我们将要实现的 DEMO。">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="https://cdn-images-1.medium.com/max/800/1*AF1rXY_iumutiVOMSXf_LQ.gif">
+<meta property="og:image" content="https://cdn-images-1.medium.com/max/800/1*RpS6k11QbgHRIuAvy1Hw5Q.png">
+<meta property="og:image" content="https://cdn-images-1.medium.com/max/800/1*MPjfL4fwZlLkoja4cNg-Zg.png">
+<meta property="og:image" content="https://cdn-images-1.medium.com/max/800/1*wmMG_h5lJURLsYEZLv8ltw.png">
+<meta property="og:image" content="https://cdn-images-1.medium.com/max/800/1*uok3Fg7Kqd8ASbONmK1RSA.png">
+<meta property="og:image" content="https://cdn-images-1.medium.com/max/800/1*AF1rXY_iumutiVOMSXf_LQ.gif">
+<meta property="og:image" content="https://cdn-images-1.medium.com/max/800/1*6IaPRnPBuODTJT6mm9dNFw.png">
+<meta property="og:image" content="https://cdn-images-1.medium.com/max/800/1*bq8bUGVNglafbnDDj_beFw.png">
+<meta property="og:image" content="https://cdn-images-1.medium.com/max/800/1*Krr3W7AwgW3ZThim62VZtg.png">
+<meta property="og:image" content="https://cdn-images-1.medium.com/max/800/1*DQFXH8zH4RpOFOqOb4DbMg.gif">
+<meta property="og:image" content="https://cdn-images-1.medium.com/max/800/1*fJabzNuhWcJVUXa3O5OlSQ.png">
+<meta property="og:updated_time" content="2018-05-16T06:56:10.583Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="【译】如何在 5 分钟之内写出一个不错的 loading 界面">
+<meta name="twitter:description" content="首先，让我们先看一下效果图。  这就是我们将要实现的 DEMO。">
+<meta name="twitter:image" content="https://cdn-images-1.medium.com/max/800/1*AF1rXY_iumutiVOMSXf_LQ.gif">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":null,"post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://myhexo.whuzxq.com/2018/05/15/loading/"/>
+
+
+
+
+
+  <title>【译】如何在 5 分钟之内写出一个不错的 loading 界面 | WHUZXQ'S BLOG</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">WHUZXQ'S BLOG</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">天道酬勤</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-生活">
+          <a href="/favorite/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-question-circle"></i> <br />
+            
+            生活
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-绘画">
+          <a href="/photos/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-question-circle"></i> <br />
+            
+            绘画
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://myhexo.whuzxq.com/2018/05/15/loading/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="zxq">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/uploads/avatar.png">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="WHUZXQ'S BLOG">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">【译】如何在 5 分钟之内写出一个不错的 loading 界面</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-05-15T19:51:11+08:00">
+                2018-05-15
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/掘金翻译/" itemprop="url" rel="index">
+                    <span itemprop="name">掘金翻译</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+            <span class="post-meta-divider">|</span>
+            <span class="page-pv"><i class="fa fa-file-o"></i> 浏览量
+            <span class="busuanzi-value" id="busuanzi_value_page_pv" ></span>次
+            </span>
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>首先，让我们先看一下效果图。</p>
+<p><img src="https://cdn-images-1.medium.com/max/800/1*AF1rXY_iumutiVOMSXf_LQ.gif" alt=""></p>
+<p>这就是我们将要实现的 <a href="https://codepen.io/ohansemmanuel/pen/ZxOjGx" target="_blank" rel="noopener">DEMO</a>。<br> <a id="more"></a></p>
+<p>是不是觉得看起来很眼熟？</p>
+<p>如果眼熟的话，那你可能在 <a href="https://slack.com" target="_blank" rel="noopener">Slack</a> 上见过它！</p>
+<p>让我们只使用 css 和 html，来实现一下这个 loading 页面吧！</p>
+<p>如果你想小试身手，可以在 <a href="http://codepen.io" target="_blank" rel="noopener">Codepen</a> 上创建一个 pen，编写教程代码。</p>
+<p>现在，让我们开始吧！</p>
+<h4 id="1-添加-class-作为标记"><a href="#1-添加-class-作为标记" class="headerlink" title="1. 添加 class 作为标记"></a>1. 添加 class 作为标记</h4><p>html 部分很简单，如下面代码所示：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">&lt;section class=&quot;loading&quot;&gt;</span><br><span class="line"></span><br><span class="line">For new sidebar colors, click your workspace name, then     Preferences &gt; Sidebar &gt; Theme</span><br><span class="line"></span><br><span class="line">&lt;span class=&quot;loading__author&quot;&gt; - Your friends at Slack&lt;/span&gt;</span><br><span class="line">    &lt;span class=&quot;loading__anim&quot;&gt;&lt;/span&gt;</span><br><span class="line"></span><br><span class="line">&lt;/section&gt;</span><br></pre></td></tr></table></figure>
+<p>是不是很简单？</p>
+<p>如果你不清楚为什么类名中出现了破折号，我在 <a href="https://medium.freecodecamp.org/css-naming-conventions-that-will-save-you-hours-of-debugging-35cea737d849" target="_blank" rel="noopener">这篇文章</a> 中解释了背后的原因。</p>
+<p>现在我们有一些文本，以及一个类名为 <code>loading_anim</code> 的 span 标签。</p>
+<p>效果图如下：</p>
+<p><img src="https://cdn-images-1.medium.com/max/800/1*RpS6k11QbgHRIuAvy1Hw5Q.png" alt=""></p>
+<p>还不赖，对吧？</p>
+<h4 id="2-将内容居中"><a href="#2-将内容居中" class="headerlink" title="2. 将内容居中"></a>2. 将内容居中</h4><p>现在的效果并不理想，下一步我们将 class 为 <code>.loading</code> 的 session 标签在页面上居中。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">body &#123;</span><br><span class="line">  display: flex;</span><br><span class="line">  justify-content: center;</span><br><span class="line">  align-items: center;</span><br><span class="line">  min-height: 100vh;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p><img src="https://cdn-images-1.medium.com/max/800/1*MPjfL4fwZlLkoja4cNg-Zg.png" alt=""></p>
+<p>现在居中了！</p>
+<p>有没有看起来好一点？</p>
+<h4 id="3-设置加载文本的样式"><a href="#3-设置加载文本的样式" class="headerlink" title="3. 设置加载文本的样式"></a>3. 设置加载文本的样式</h4><p>现在，让我们设置 class 为 <code>.loading</code> 的文本样式，使其看上去更棒。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">.loading &#123;</span><br><span class="line">  max-width: 50%;</span><br><span class="line">  line-height: 1.4;</span><br><span class="line">  font-size: 1.2rem;</span><br><span class="line">  font-weight: bold;</span><br><span class="line">  text-align: center;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p><img src="https://cdn-images-1.medium.com/max/800/1*wmMG_h5lJURLsYEZLv8ltw.png" alt=""></p>
+<h4 id="4-设置下方-loading-author-的样式"><a href="#4-设置下方-loading-author-的样式" class="headerlink" title="4. 设置下方 .loading_author 的样式"></a>4. 设置下方 <code>.loading_author</code> 的样式</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">.loading__author &#123;</span><br><span class="line">  font-weight: normal;</span><br><span class="line">  font-size: 0.9rem;</span><br><span class="line">  color: rgba(189,189,189 ,1);</span><br><span class="line">  margin: 0.6rem 0 2rem 0;</span><br><span class="line">  display: block;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>看看效果！</p>
+<p><img src="https://cdn-images-1.medium.com/max/800/1*uok3Fg7Kqd8ASbONmK1RSA.png" alt=""></p>
+<h4 id="5-创建-loading-动画"><a href="#5-创建-loading-动画" class="headerlink" title="5. 创建 loading 动画"></a>5. 创建 loading 动画</h4><p>终于到了备受期待的一步。这是最长的一个步骤，在此之前我会花一些时间确保你了解它的工作原理。</p>
+<p>如果您遇到困难，请发表评论，我很乐意提供帮助。</p>
+<p>再回顾一遍 loading 的效果。</p>
+<p><img src="https://cdn-images-1.medium.com/max/800/1*AF1rXY_iumutiVOMSXf_LQ.gif" alt=""></p>
+<p>我们可以看到 loading 圆环一半是蓝色，另一半是灰色的。默认情况下，<code>HTML</code> 元素不会被切分。所有HTML元素可以看作<em>盒子</em>。第一个真正的挑战是如何使 class 为 <code>.loading__anim</code> 的元素包含两种边框颜色。</p>
+<p>如果你现在还没有太明白，不要担心。后面会继续进行讲解。</p>
+<p>首先，让我们先定义 loading 的大小。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">.loading__anim &#123;</span><br><span class="line">  width: 35px;</span><br><span class="line">  height: 35px;</span><br><span class="line"> &#125;</span><br></pre></td></tr></table></figure>
+<p>现在，loading 组件与文本位于同一行，这是因为 <code>span</code> 标签是 html 中的内联元素。 </p>
+<p>我们现在修改样式，使其在另一行展示。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">.loading__anim &#123;</span><br><span class="line">   width: 35px;</span><br><span class="line">   height: 35px;</span><br><span class="line">   display: inline-block;</span><br><span class="line">  &#125;</span><br></pre></td></tr></table></figure>
+<p>最后，让我们为其设置 border 属性。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">.loading__anim &#123;</span><br><span class="line">   width: 35px;</span><br><span class="line">   height: 35px;</span><br><span class="line">   display: inline-block;</span><br><span class="line">   border: 5px solid rgba(189,189,189 ,0.25);</span><br><span class="line">  &#125;</span><br></pre></td></tr></table></figure>
+<p>在元素周围会形成宽度为 5px 的灰色边框。</p>
+<p>下方为效果图。</p>
+<p><img src="https://cdn-images-1.medium.com/max/800/1*6IaPRnPBuODTJT6mm9dNFw.png" alt=""></p>
+<p>显示出一个灰色的边框。</p>
+<p>让我们继续完善它。</p>
+<p>一个元素有四条边，<code>top</code>、<code>bottom</code>、<code>left</code> 和 <code>right</code>。</p>
+<p>我们之前设置的 <code>border</code> 对四个边都实现了相同的渲染。</p>
+<p>我们现在需要对 loading 组件的边框设置不同的颜色。</p>
+<p>无论你选择哪条边都可以，在下方代码中以 <code>top</code> 和 <code>left</code> 举例演示。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">.loading__anim &#123;</span><br><span class="line">  width: 35px;</span><br><span class="line">  height: 35px;</span><br><span class="line">  display: inline-block;</span><br><span class="line">  border: 5px solid rgba(189,189,189 ,0.25);</span><br><span class="line">  border-left-color: rgba(3,155,229 ,1);</span><br><span class="line">  border-top-color: rgba(3,155,229 ,1);</span><br><span class="line">  &#125;</span><br></pre></td></tr></table></figure>
+<p>现在，<code>left</code> 和 <code>top</code> 边界将呈现蓝色。效果图如下：</p>
+<p><img src="https://cdn-images-1.medium.com/max/800/1*bq8bUGVNglafbnDDj_beFw.png" alt=""></p>
+<p>看起来还可以。</p>
+<p>我们马上要成功了！</p>
+<p>这个 loading 组件是圆的，而不是方的。让我们通过给 <code>.loader__anim</code> 组件设置 <code>border-radius</code> 属性为 <code>50%</code>，来改变它的形状。</p>
+<p>效果图如下：</p>
+<p><img src="https://cdn-images-1.medium.com/max/800/1*Krr3W7AwgW3ZThim62VZtg.png" alt=""></p>
+<p>不是很差，是吧？</p>
+<p>最后一步是制作动画。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">@keyframes rotate &#123;</span><br><span class="line"> to &#123;</span><br><span class="line">  transform: rotate(1turn)</span><br><span class="line"> &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>希望您对 <a href="https://www.w3schools.com/css/css3_animations.asp" target="_blank" rel="noopener">CSS 动画</a> 有所了解。<code>1 turn</code> 等于 <code>360 deg</code>，表示完整的转了一个 360 度的圈。</p>
+<p>并按如下方式使用：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">animation: rotate 600ms infinite linear;</span><br></pre></td></tr></table></figure>
+<p>哟！我们做到了！</p>
+<p>请看最终效果图。</p>
+<p><img src="https://cdn-images-1.medium.com/max/800/1*DQFXH8zH4RpOFOqOb4DbMg.gif" alt=""></p>
+<p>lo hicimos! (西班牙语)</p>
+<p>是不是很酷？</p>
+<p>如果有任何步骤使您困惑，请发表评论，我很乐意提供帮助。</p>
+<h3 id="想要进阶学习？"><a href="#想要进阶学习？" class="headerlink" title="想要进阶学习？"></a>想要进阶学习？</h3><p>我已经创建了一个免费的 CSS 指南，以便您能立刻掌握 CSS 技能。<a href="http://eepurl.com/dgDVRb" target="_blank" rel="noopener">获取电子书</a>。</p>
+<p><img src="https://cdn-images-1.medium.com/max/800/1*fJabzNuhWcJVUXa3O5OlSQ.png" alt=""></p>
+<p>你不知道的七个 css 秘密。</p>
+<hr>
+<blockquote>
+<p><a href="https://github.com/xitu/gold-miner" target="_blank" rel="noopener">掘金翻译计划</a> 是一个翻译优质互联网技术文章的社区，文章来源为 <a href="https://juejin.im" target="_blank" rel="noopener">掘金</a> 上的英文分享文章。内容覆盖 <a href="https://github.com/xitu/gold-miner#android" target="_blank" rel="noopener">Android</a>、<a href="https://github.com/xitu/gold-miner#ios" target="_blank" rel="noopener">iOS</a>、<a href="https://github.com/xitu/gold-miner#前端" target="_blank" rel="noopener">前端</a>、<a href="https://github.com/xitu/gold-miner#后端" target="_blank" rel="noopener">后端</a>、<a href="https://github.com/xitu/gold-miner#区块链" target="_blank" rel="noopener">区块链</a>、<a href="https://github.com/xitu/gold-miner#产品" target="_blank" rel="noopener">产品</a>、<a href="https://github.com/xitu/gold-miner#设计" target="_blank" rel="noopener">设计</a>、<a href="https://github.com/xitu/gold-miner#人工智能" target="_blank" rel="noopener">人工智能</a>等领域，想要查看更多优质译文请持续关注 <a href="https://github.com/xitu/gold-miner" target="_blank" rel="noopener">掘金翻译计划</a>、<a href="http://weibo.com/juejinfanyi" target="_blank" rel="noopener">官方微博</a>、<a href="https://zhuanlan.zhihu.com/juejinfanyi" target="_blank" rel="noopener">知乎专栏</a>。</p>
+</blockquote>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/javascript/" rel="tag"># javascript</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2018/05/10/promise/" rel="next" title="你真的完全掌握了promise么？">
+                <i class="fa fa-chevron-left"></i> 你真的完全掌握了promise么？
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2018/05/16/REACT-BIND/" rel="prev" title="【译】为什么需要在 React 类组件中为事件处理程序绑定 this">
+                【译】为什么需要在 React 类组件中为事件处理程序绑定 this <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image"
+                src="/uploads/avatar.png"
+                alt="zxq" />
+            
+              <p class="site-author-name" itemprop="name">zxq</p>
+              <p class="site-description motion-element" itemprop="description">前端伊甸园</p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">5</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">4</span>
+                  <span class="site-state-item-name">分类</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">5</span>
+                  <span class="site-state-item-name">标签</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+            <div class="feed-link motion-element">
+              <a href="/rss2.xml" rel="alternate">
+                <i class="fa fa-rss"></i>
+                RSS
+              </a>
+            </div>
+          
+
+          
+            <div class="links-of-author motion-element">
+                
+                  <span class="links-of-author-item">
+                    <a href="https://github.com/whuzxq" target="_blank" title="GitHub">
+                      
+                        <i class="fa fa-fw fa-github"></i>GitHub</a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="mailto:1092621818@qq.com" target="_blank" title="E-Mail">
+                      
+                        <i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="https://blog.csdn.net/whuzxq" target="_blank" title="CSDN">
+                      
+                        <i class="fa fa-fw fa-globe"></i>CSDN</a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="http://whuzxq.com" target="_blank" title="个人主页">
+                      
+                        <i class="fa fa-fw fa-globe"></i>个人主页</a>
+                  </span>
+                
+            </div>
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-4"><a class="nav-link" href="#1-添加-class-作为标记"><span class="nav-number">1.</span> <span class="nav-text">1. 添加 class 作为标记</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2-将内容居中"><span class="nav-number">2.</span> <span class="nav-text">2. 将内容居中</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#3-设置加载文本的样式"><span class="nav-number">3.</span> <span class="nav-text">3. 设置加载文本的样式</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#4-设置下方-loading-author-的样式"><span class="nav-number">4.</span> <span class="nav-text">4. 设置下方 .loading_author 的样式</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#5-创建-loading-动画"><span class="nav-number">5.</span> <span class="nav-text">5. 创建 loading 动画</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#想要进阶学习？"><span class="nav-number"></span> <span class="nav-text">想要进阶学习？</span></a></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2018</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">zxq</span>
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Pisces</a> v5.1.4</div>
+
+
+
+
+        
+<div class="busuanzi-count">
+  <script async src="https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+  
+
+  
+</div>
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.4"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+<script>
+(function(){
+    var bp = document.createElement('script');
+    var curProtocol = window.location.protocol.split(':')[0];
+    if (curProtocol === 'https') {
+        bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';        
+    }
+    else {
+        bp.src = 'http://push.zhanzhang.baidu.com/push.js';
+    }
+    var s = document.getElementsByTagName("script")[0];
+    s.parentNode.insertBefore(bp, s);
+})();
+</script>
+
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>
